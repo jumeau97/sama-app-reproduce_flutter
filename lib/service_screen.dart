@@ -1,12 +1,20 @@
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
+import 'package:provider/provider.dart';
 import 'package:sama/bottom_tab_bar_nav.dart';
 import 'package:sama/buy_service_screen.dart';
 import 'package:sama/main_drawer.dart';
+import 'package:sama/models/channel/channel.dart';
 import 'package:sama/sama_pay_screen.dart';
 import 'package:sama/scolarship_and_salary_screen.dart';
 import 'package:sama/send_money_screen.dart';
+import 'package:sama/service/channel_service/channel_data.dart';
+import 'package:sama/service/channel_service/channel_service.dart';
 import 'package:sama/transaction_history_screen.dart';
+import 'package:sama/utils/constants.dart';
+import 'package:sama/utils/size_helpers.dart';
 import 'package:sama/with_draw_money.dart';
 
 final List<String> imgList = [
@@ -68,11 +76,111 @@ class ServiceScreen extends StatefulWidget {
 }
 
 class _ServiceScreenState extends State<ServiceScreen> {
+  List<Channel>? channels;
+  
+    findChannel() async {
+    channels = await ChannelService.findChannel();
+    Provider.of<ChannelData>(context, listen: false).channels = channels!;
+    setState(() {});
+  }
+  var menus = [
+    {
+      "title": "Historique des transactions",
+      "icon": svgHistorique,
+      "route": BottomTabBarNav(
+        pageSelected: const TransactionHistoryScreen(),
+        selectedIndex: 0,
+        botNavBar: true,
+      ),
+    },
+    {
+      "title": "Envoi d'Argent\n",
+      "icon": svgEnvoi,
+      "route": BottomTabBarNav(
+        pageSelected: const SendMoneyScreen(),
+        selectedIndex: 1,
+        botNavBar: true,
+      ),
+    },
+    {
+      "title": "Retrait d'argent\n",
+      "icon": svgRetrait,
+      "route": BottomTabBarNav(
+        pageSelected: const WithDrawMoneyScreen(),
+        selectedIndex: 2,
+        botNavBar: true,
+      ),
+    },
+    {
+      "title": "Achat de service",
+      "icon": svgWarimissen,
+      "route": BottomTabBarNav(
+        pageSelected: const BuyServiceScreen(),
+        selectedIndex: 1,
+        botNavBar: true,
+      ),
+    },
+    {
+      "title": "SamaPay",
+      "icon": svgInfo,
+      "route": BottomTabBarNav(
+        pageSelected: const SamaPayScreen(),
+        selectedIndex: 1,
+        botNavBar: true,
+      ),
+    },
+    {
+      "title": "Bourse\n/salaire",
+      "icon": svgParrainage,
+      "route": BottomTabBarNav(
+        pageSelected: const ScolarshipAndSalary(),
+        selectedIndex: 2,
+        botNavBar: true,
+      ),
+    },
+    {
+      "title": "Banques\n",
+      "icon": svgInfo,
+      "route": "",
+    },
+    {
+      "title": "Bonus\n",
+      "icon": svgWarimissen,
+      "route": "",
+    },
+    {
+      "title": "Infos utiles\n",
+      "icon": svgWarimissen,
+      "route": "",
+    },
+    {
+      "title": "Profil\n",
+      "icon": svgWarimissen,
+      "route": "",
+    },
+    {
+      "title": "Autoriser le retrait bourse",
+      "icon": svgWarimissen,
+      "route": "",
+    },
+  ];
   int _current = 0;
   final CarouselController _controller = CarouselController();
 
   @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+     findChannel();
+  }
+
+  @override
   Widget build(BuildContext context) {
+    var size = MediaQuery.of(context).size;
+    // final double itemHeight = (size.height- 24) / 2;
+    final double itemHeight = displayHeight(context) * 0.01;
+    final double itemWidth = displayWidth(context) * 0.01;
+
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.white,
@@ -95,8 +203,8 @@ class _ServiceScreenState extends State<ServiceScreen> {
       drawer: const MainDrawer(),
       body: SingleChildScrollView(
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisSize: MainAxisSize.min,
+          // crossAxisAlignment: CrossAxisAlignment.start,
+          // mainAxisSize: MainAxisSize.min,
           children: [
             Container(
               padding: const EdgeInsets.only(top: 22.0, left: 5.0),
@@ -199,395 +307,54 @@ class _ServiceScreenState extends State<ServiceScreen> {
             ),
             GridView.count(
               shrinkWrap: true,
-              scrollDirection: Axis.vertical,
-              primary: false,
-              padding: const EdgeInsets.all(10),
-              crossAxisSpacing: 5,
-              mainAxisSpacing: 3,
               crossAxisCount: 3,
-              children: <Widget>[
-                GestureDetector(
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => BottomTabBarNav(
-                          pageSelected: const TransactionHistoryScreen(),
-                          selectedIndex: 0,
-                          botNavBar: true,
-                        ),
-                      ),
-                    );
-                  },
-                  child: Column(
-                    // crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      Container(
-                        decoration: BoxDecoration(
-                          border: Border.all(
-                              color: Colors.lightBlueAccent, width: 2.0),
-                          // color: Colors.redAccent,
-                          shape: BoxShape.circle,
-                        ),
-                        child: const Icon(
-                          Icons.add,
-                          size: 40.0,
-                          color: Colors.blueAccent,
-                        ),
-                      ),
-                      const SizedBox(height: 5.0),
-                      const Text(
-                        'Historique des transactions',
-                        textAlign: TextAlign.center,
-                        style:
-                            TextStyle(fontSize: 12.0, color: Colors.blueAccent),
-                      ),
-                    ],
-                  ),
-                ),
-                GestureDetector(
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => BottomTabBarNav(
-                          pageSelected: const SendMoneyScreen(),
-                          selectedIndex: 1,
-                          botNavBar: true,
-                        ),
-                      ),
-                    );
-                  },
-                  child: Column(
-                    children: [
-                      Container(
-                        decoration: BoxDecoration(
-                          border: Border.all(
-                              color: Colors.lightBlueAccent, width: 2.0),
-                          // color: Colors.redAccent,
-                          shape: BoxShape.circle,
-                        ),
-                        child: const Icon(
-                          Icons.add,
-                          size: 40.0,
-                          color: Colors.blueAccent,
-                        ),
-                      ),
-                      const SizedBox(
-                        height: 5.0,
-                      ),
-                      const Text(
-                        'Envoi d\'argent',
-                        style:
-                            TextStyle(fontSize: 12.0, color: Colors.blueAccent),
-                      ),
-                    ],
-                  ),
-                ),
-                GestureDetector(
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => BottomTabBarNav(
-                            pageSelected: const WithDrawMoneyScreen(),
-                            selectedIndex: 2,
-                            botNavBar: true),
-                      ),
-                    );
-                  },
-                  child: Column(
-                    children: [
-                      Container(
-                        decoration: BoxDecoration(
-                          border: Border.all(
-                              color: Colors.lightBlueAccent, width: 2.0),
-                          // color: Colors.redAccent,
-                          shape: BoxShape.circle,
-                        ),
-                        child: const Icon(
-                          Icons.add,
-                          size: 40.0,
-                          color: Colors.blueAccent,
-                        ),
-                      ),
-                      const SizedBox(
-                        height: 5.0,
-                      ),
-                      const Text(
-                        'Retrait d\'argent',
-                        style:
-                            TextStyle(fontSize: 12.0, color: Colors.blueAccent),
-                      ),
-                    ],
-                  ),
-                ),
-                GestureDetector(
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => BottomTabBarNav(
-                          pageSelected: const BuyServiceScreen(),
-                          selectedIndex: 0,
-                          botNavBar: true,
-                        ),
-                      ),
-                    );
-                  },
-                  child: Column(
-                    children: [
-                      Container(
-                        decoration: BoxDecoration(
-                          border: Border.all(
-                              color: Colors.lightBlueAccent, width: 2.0),
-                          // color: Colors.redAccent,
-                          shape: BoxShape.circle,
-                        ),
-                        child: const Icon(
-                          Icons.add,
-                          size: 40.0,
-                          color: Colors.blueAccent,
-                        ),
-                      ),
-                      const SizedBox(
-                        height: 5.0,
-                      ),
-                      const Text(
-                        'Achat de service',
-                        style:
-                            TextStyle(fontSize: 12.0, color: Colors.blueAccent),
-                      ),
-                    ],
-                  ),
-                ),
-                GestureDetector(
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => BottomTabBarNav(
-                          pageSelected: const SamaPayScreen(),
-                          selectedIndex: 0,
-                          botNavBar: true,
-                        ),
-                      ),
-                    );
-                  },
-                  child: Column(
-                    children: [
-                      Container(
-                        decoration: BoxDecoration(
-                          border: Border.all(
-                              color: Colors.lightBlueAccent, width: 2.0),
-                          // color: Colors.redAccent,
-                          shape: BoxShape.circle,
-                        ),
-                        child: const Icon(
-                          Icons.add,
-                          size: 40.0,
-                          color: Colors.blueAccent,
-                        ),
-                      ),
-                      const SizedBox(
-                        height: 5.0,
-                      ),
-                      const Text(
-                        'SamaPay',
-                        style:
-                            TextStyle(fontSize: 12.0, color: Colors.blueAccent),
-                      ),
-                    ],
-                  ),
-                ),
-                GestureDetector(
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => BottomTabBarNav(
-                                pageSelected: const ScolarshipAndSalaryScreen(),
-                                selectedIndex: 0,
-                                botNavBar: true,
-                              )),
-                    );
-                  },
-                  child: Column(
-                    children: [
-                      Container(
-                        decoration: BoxDecoration(
-                          border: Border.all(
-                              color: Colors.lightBlueAccent, width: 2.0),
-                          // color: Colors.redAccent,
-                          shape: BoxShape.circle,
-                        ),
-                        child: const Icon(
-                          Icons.add,
-                          size: 40.0,
-                          color: Colors.blueAccent,
-                        ),
-                      ),
-                      const SizedBox(
-                        height: 5.0,
-                      ),
-                      const Text(
-                        'Bourse / Salaire',
-                        style:
-                            TextStyle(fontSize: 12.0, color: Colors.blueAccent),
-                      ),
-                    ],
-                  ),
-                ),
-                GestureDetector(
-                  onTap: () => showDialog(
-                    context: context,
-                    builder: (BuildContext context) => AlertDialog(
-                      title: Column(
+              childAspectRatio: (itemWidth / itemHeight) / 0.66,
+              mainAxisSpacing: displayHeight(context) * 0.006,
+              crossAxisSpacing: displayWidth(context) * 0.005,
+              padding: EdgeInsets.fromLTRB(
+                displayWidth(context) * 0.07,
+                displayHeight(context) * 0.02,
+                displayWidth(context) * 0.07,
+                displayHeight(context) * 0.02,
+              ),
+              primary: false,
+              children: menus
+                  .map(
+                    (menu) => GestureDetector(
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => menu['route'] as Widget,
+                          ),
+                        );
+                      },
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
-                          Container(
-                            margin: const EdgeInsets.all(20.0),
-                            alignment: Alignment.center,
-                            child: const Text(
-                              'Banque',
-                              style: TextStyle(
-                                color: Color.fromARGB(235, 81, 79, 79),
-                              ),
-                            ),
+                          SvgPicture.string(
+                            menu['icon'] as String,
+                            height: displayHeight(context) * 0.1,
                           ),
                           SizedBox(
-                            width: double.infinity,
-                            child: GestureDetector(
-                              onTap: () {
-                                Navigator.pop(context);
-                                showDialog(
-                                  context: context,
-                                  builder: (BuildContext context) =>
-                                      const AlertDialog(
-                                    title: PopupBankAccount(),
-                                  ),
-                                );
-                              },
-                              child: Card(
-                                elevation: 2.0,
-                                child: Container(
-                                  padding: const EdgeInsets.only(
-                                      top: 8.0, bottom: 8.0, left: 8.0),
-                                  child: const Text(
-                                    'Compte Bancaire',
-                                    style: TextStyle(
-                                      color: Color.fromARGB(255, 1, 48, 86),
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ),
+                            height: displayHeight(context) * 0.01,
                           ),
-                          const SizedBox(
-                            height: 3.0,
-                          ),
-                          SizedBox(
-                            width: double.infinity,
-                            child: Card(
-                              elevation: 2.0,
-                              child: Container(
-                                padding: const EdgeInsets.only(
-                                    top: 8.0, bottom: 8.0, left: 8.0),
-                                child: const Text(
-                                  'Carte visa',
-                                  style: TextStyle(
-                                    color: Color.fromARGB(255, 1, 48, 86),
-                                  ),
-                                ),
-                              ),
+                          Expanded(
+                            child: Text(
+                              menu['title'].toString(),
+                              textAlign: TextAlign.center,
+                              style: const TextStyle(
+                                  color: Colors.black,
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 10),
                             ),
                           ),
                         ],
                       ),
                     ),
-                  ),
-                  child: Container(
-                    child: Column(
-                      children: [
-                        Container(
-                          decoration: BoxDecoration(
-                            border: Border.all(
-                                color: Colors.lightBlueAccent, width: 2.0),
-                            // color: Colors.redAccent,
-                            shape: BoxShape.circle,
-                          ),
-                          child: const Icon(
-                            Icons.add,
-                            size: 40.0,
-                            color: Colors.blueAccent,
-                          ),
-                        ),
-                        const SizedBox(
-                          height: 5.0,
-                        ),
-                        const Text(
-                          'Banque',
-                          style: TextStyle(
-                              fontSize: 12.0, color: Colors.blueAccent),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-                Container(
-                  child: Column(
-                    children: [
-                      Container(
-                        decoration: BoxDecoration(
-                          border: Border.all(
-                              color: Colors.lightBlueAccent, width: 2.0),
-                          // color: Colors.redAccent,
-                          shape: BoxShape.circle,
-                        ),
-                        child: const Icon(
-                          Icons.add,
-                          size: 40.0,
-                          color: Colors.blueAccent,
-                        ),
-                      ),
-                      const SizedBox(
-                        height: 5.0,
-                      ),
-                      const Text(
-                        'Bonus',
-                        style:
-                            TextStyle(fontSize: 12.0, color: Colors.blueAccent),
-                      ),
-                    ],
-                  ),
-                ),
-                Container(
-                  child: Column(
-                    children: [
-                      Container(
-                        decoration: BoxDecoration(
-                          border: Border.all(
-                              color: Colors.lightBlueAccent, width: 2.0),
-                          // color: Colors.redAccent,
-                          shape: BoxShape.circle,
-                        ),
-                        child: const Icon(
-                          Icons.add,
-                          size: 40.0,
-                          color: Colors.blueAccent,
-                        ),
-                      ),
-                      const SizedBox(
-                        height: 5.0,
-                      ),
-                      const Text(
-                        'Infos Utiles',
-                        style:
-                            TextStyle(fontSize: 12.0, color: Colors.blueAccent),
-                      ),
-                    ],
-                  ),
-                ),
-              ],
+                  )
+                  .toList(),
             ),
             const Padding(
               padding: EdgeInsets.only(left: 12),
@@ -598,8 +365,8 @@ class _ServiceScreenState extends State<ServiceScreen> {
             ),
             Container(
               width: double.infinity,
-              height: 50.0,
-              padding: const EdgeInsets.only(bottom: 8.0),
+              height: displayHeight(context) * 0.1,
+              padding: EdgeInsets.only(bottom: displayHeight(context) * 0.001),
               child: const Card(
                 shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.all(Radius.circular(4.0))),

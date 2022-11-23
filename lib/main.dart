@@ -1,5 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:sama/buy_service_screen.dart';
+import 'package:sama/service/channel_service/channel_data.dart';
+import 'package:sama/service/terms_service/terms_data.dart';
 import 'package:sama/service_screen.dart';
+import 'package:sama/utils/size_helpers.dart';
+import 'package:sama/widget/malivision_cart_screen.dart';
+import 'package:sama/widget/malivision_subscription_screen.dart';
 
 void main() {
   runApp(const SignIn());
@@ -10,12 +17,24 @@ class SignIn extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
-      debugShowCheckedModeBanner: false,
-      home: Scaffold(
-        body: MyForm(),
-         ),
-        
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider(
+          create: (context) => ChannelData(),
+        ),
+        ChangeNotifierProvider(
+          create: (context) => TermsData(),
+        ),
+      ],
+      child: const MaterialApp(
+        debugShowCheckedModeBanner: false,
+        home: Scaffold(
+          body: 
+          MyForm(),
+          // MalivisionSubscription()
+          // MalivisionCartScreen(),
+        ),
+      ),
     );
   }
 }
@@ -57,14 +76,13 @@ class _MyFormState extends State<MyForm> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.only(top: 23.0),
+      padding: EdgeInsets.only(top: displayHeight(context) * 0.05),
       child: Column(
         children: <Widget>[
           SizedBox(
-            // padding: const EdgeInsets.only(left: 50.0 , right: 30.0),
-            height: 40.0,
+            height: displayHeight(context) * 0.07,
             child: Image.asset('assets/images/logo.jpg'),
-            ),
+          ),
           Stack(
             alignment: Alignment.topCenter,
             children: <Widget>[
@@ -75,13 +93,16 @@ class _MyFormState extends State<MyForm> {
                   borderRadius: BorderRadius.circular(8.0),
                 ),
                 child: SizedBox(
-                  width: 300.0,
-                  height: 190.0,
+                  // width: displayWidth(context),
+                  height: displayHeight(context) * 0.31,
                   child: Column(
                     children: <Widget>[
                       Padding(
-                        padding: const EdgeInsets.only(
-                            top: 20.0, bottom: 20.0, left: 25.0, right: 25.0),
+                        padding: EdgeInsets.only(
+                            top: displayHeight(context) * 0.02,
+                            bottom: displayHeight(context) * 0.02,
+                            left: displayWidth(context) * 0.06,
+                            right: displayWidth(context) * 0.06),
                         child: TextField(
                           readOnly: true,
                           focusNode: focusNodeEmail,
@@ -94,8 +115,8 @@ class _MyFormState extends State<MyForm> {
                             icon: Icon(Icons.phone,
                                 color: Colors.white, size: 22),
                             hintText: '74845276',
-                            hintStyle:
-                                TextStyle(fontSize: 16.0, color: Colors.white),
+                            hintStyle: TextStyle(
+                                fontSize: 16.0, color: Colors.white),
                           ),
                           onSubmitted: (_) {
                             focusNodeEmail.requestFocus();
@@ -103,13 +124,16 @@ class _MyFormState extends State<MyForm> {
                         ),
                       ),
                       Container(
-                        width: 250.0,
-                        height: 1.0,
+                        width: displayWidth(context) * 0.8,
+                        height: displayHeight(context) * 0.001,
                         color: Colors.grey[400],
                       ),
                       Padding(
-                        padding: const EdgeInsets.only(
-                            top: 20.0, bottom: 20.0, left: 25.0, right: 25.0),
+                        padding: EdgeInsets.only(
+                            top: displayHeight(context) * 0.02,
+                            bottom: displayHeight(context) * 0.03,
+                            left: displayWidth(context) * 0.06,
+                            right: displayWidth(context) * 0.06),
                         child: TextField(
                           focusNode: focusNodePassword,
                           controller: loginPasswordController,
@@ -150,7 +174,7 @@ class _MyFormState extends State<MyForm> {
                 ),
               ),
               Container(
-                margin: const EdgeInsets.only(top: 170.0),
+                margin: EdgeInsets.only(top: displayHeight(context) * 0.28),
                 decoration: const BoxDecoration(
                   borderRadius: BorderRadius.all(Radius.circular(5.0)),
                   boxShadow: <BoxShadow>[
@@ -185,9 +209,10 @@ class _MyFormState extends State<MyForm> {
                           builder: (context) => const ServiceScreen()),
                     );
                   },
-                  child: const Padding(
-                    padding:
-                        EdgeInsets.symmetric(vertical: 10.0, horizontal: 42.0),
+                  child: Padding(
+                    padding: EdgeInsets.symmetric(
+                        vertical: displayHeight(context) * 0.015,
+                        horizontal: displayWidth(context) * 0.18),
                     child: Text(
                       'Se connecter',
                       style: TextStyle(
@@ -200,42 +225,82 @@ class _MyFormState extends State<MyForm> {
               ),
             ],
           ),
-          Container(
-            alignment: Alignment.bottomCenter,
-            height: 370.0,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              mainAxisSize: MainAxisSize.max,
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: [
-                SizedBox(
-                  width: double.maxFinite,
-                  child: OutlinedButton(
-                    style: OutlinedButton.styleFrom(side:  const BorderSide(color: Colors.red)),
-                    onPressed: () {},
-                    child: const Text(
-                      'Utiliser SAMA sans connexion internet',
-                      style: TextStyle(fontSize: 12.0, color: Colors.red),
-                    ),
+          // SizedBox(height: displayHeight(context)*0.358,),
+          const  Spacer(),
+          Column(
+            children: [
+              SizedBox(
+                width: displayWidth(context)*0.9,
+                child: OutlinedButton(
+                  style: OutlinedButton.styleFrom(
+                      side: const BorderSide(color: Colors.red)),
+                  onPressed: () {},
+                  child: const Text(
+                    'Utiliser SAMA sans connexion internet',
+                    style: TextStyle(fontSize: 12.0, color: Colors.red),
                   ),
                 ),
-                Container(
-                  height: 8.0,
-                ),
-                SizedBox(
-                  width: double.infinity,
-                  child: OutlinedButton(
-                    style: OutlinedButton.styleFrom(side:  const BorderSide(color: Color.fromARGB(255, 6, 47, 106))),
-                    onPressed: () {},
-                    child: const Text(
-                      'Utiliser Sama par WhatsApp',
-                      style: TextStyle(fontSize: 12.0, color: Color.fromARGB(255, 6, 47, 106)),
-                    ),
+              ),
+              SizedBox(height: displayHeight(context)*0.01,),
+              SizedBox(
+                width: displayWidth(context)*0.9,
+                child: OutlinedButton(
+                  style: OutlinedButton.styleFrom(
+                      side: const BorderSide(
+                          color: Color.fromARGB(255, 6, 47, 106))),
+                  onPressed: () {},
+                  child: const Text(
+                    'Utiliser Sama par WhatsApp',
+                    style: TextStyle(
+                        fontSize: 12.0, color: Color.fromARGB(255, 6, 47, 106)),
                   ),
                 ),
-              ],
-            ),
-          )
+              ),
+            ],
+          ),
+         
+          
+
+          // SizedBox(height: displayHeight(context)*0.45,),
+          // Expanded(
+          //   child: Column(
+          //     crossAxisAlignment: CrossAxisAlignment.center,
+          //     mainAxisSize: MainAxisSize.max,
+          //     mainAxisAlignment: MainAxisAlignment.end,
+          //     children: [
+          //       SizedBox(
+          //         width: double.maxFinite,
+          //         child: OutlinedButton(
+          //           style: OutlinedButton.styleFrom(
+          //               side: const BorderSide(color: Colors.red)),
+          //           onPressed: () {},
+          //           child: const Text(
+          //             'Utiliser SAMA sans connexion internet',
+          //             style: TextStyle(fontSize: 12.0, color: Colors.red),
+          //           ),
+          //         ),
+          //       ),
+          //       Container(
+          //         height: displayHeight(context) * 0.015,
+          //       ),
+          //       SizedBox(
+          //         width: double.infinity,
+          //         child: OutlinedButton(
+          //           style: OutlinedButton.styleFrom(
+          //               side: const BorderSide(
+          //                   color: Color.fromARGB(255, 6, 47, 106))),
+          //           onPressed: () {},
+          //           child: const Text(
+          //             'Utiliser Sama par WhatsApp',
+          //             style: TextStyle(
+          //                 fontSize: 12.0,
+          //                 color: Color.fromARGB(255, 6, 47, 106)),
+          //           ),
+          //         ),
+          //       ),
+          //     ],
+          //   ),
+          // ),
         ],
       ),
     );

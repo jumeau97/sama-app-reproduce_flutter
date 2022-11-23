@@ -99,11 +99,12 @@ class Money extends StatelessWidget {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                    builder: (context) => BottomTabBarNav(
-                          pageSelected: const ValidateWithDrawMoneyByAgentScreen(),
-                          selectedIndex: 2,
-                          botNavBar: true,
-                        )),
+                  builder: (context) => BottomTabBarNav(
+                    pageSelected: const ValidateWithDrawMoneyByAgentScreen(),
+                    selectedIndex: 2,
+                    botNavBar: true,
+                  ),
+                ),
               );
             },
             child: Card(

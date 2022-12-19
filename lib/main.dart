@@ -1,12 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:sama/buy_service_screen.dart';
 import 'package:sama/service/channel_service/channel_data.dart';
 import 'package:sama/service/terms_service/terms_data.dart';
 import 'package:sama/service_screen.dart';
 import 'package:sama/utils/size_helpers.dart';
-import 'package:sama/widget/malivision_cart_screen.dart';
-import 'package:sama/widget/malivision_subscription_screen.dart';
+
 
 void main() {
   runApp(const SignIn());
@@ -31,8 +29,7 @@ class SignIn extends StatelessWidget {
         home: Scaffold(
           body: 
           MyForm(),
-          // MalivisionSubscription()
-          // MalivisionCartScreen(),
+        // SalesPointsMaps()
         ),
       ),
     );
@@ -213,7 +210,7 @@ class _MyFormState extends State<MyForm> {
                     padding: EdgeInsets.symmetric(
                         vertical: displayHeight(context) * 0.015,
                         horizontal: displayWidth(context) * 0.18),
-                    child: Text(
+                    child: const Text(
                       'Se connecter',
                       style: TextStyle(
                         color: Colors.white,
